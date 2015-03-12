@@ -13,7 +13,7 @@ function (
 	$,
 	Backbone,
 	Marionette,
-	Eeaseljs
+	Easeljs
 ) {
 
 	'use strict';

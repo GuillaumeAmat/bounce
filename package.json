@@ -1,0 +1,26 @@
+{
+  "description": "bounce",
+  "version": "0.1.0",
+  "author": "Boaz",
+  "contributors": [
+    {
+      "name": "Guillaume AMAT",
+      "email": "guillaume@boaz.fr"
+    },
+    {
+      "name": "Maxime COUTANT",
+      "email": "maxime@boaz.fr"
+    }
+  ],
+  "devDependencies": {
+    "bower": "~1.2.7",
+    "less": "~1.5.0",
+    "grunt": "~0.4.1",
+    "grunt-contrib-less": "~0.8.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-jst": "~0.6.0",
+    "grunt-contrib-requirejs": "~0.4.4",
+    "grunt-contrib-copy": "~0.8.0",
+    "grunt-contrib-clean": "~0.6.0"
+  }
+}

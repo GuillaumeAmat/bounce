@@ -1,0 +1,6 @@
+platforms
+node_modules
+app/bower_components
+app/css/app.css
+app/templates/templates.js
+www

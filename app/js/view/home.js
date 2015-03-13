@@ -80,29 +80,30 @@ function (
 
                     var block = blockActor.getShape(),
                     ball = ballActor.getShape(),
-                    hitPos = ball.localToLocal(0, 0, block);
+                    hitPos = ball.localToLocal(0, 0, block),
+					radius= ballActor.getOption('radius');
 
                     if(
-                        block.hitTest(hitPos.x, hitPos.y - ballActor._options.radius)
-                        || block.hitTest(hitPos.x - ballActor._options.radius, hitPos.y)
-                        || block.hitTest(hitPos.x, hitPos.y + ballActor._options.radius)
-                        || block.hitTest(hitPos.x + ballActor._options.radius, hitPos.y)
+                        block.hitTest(hitPos.x, hitPos.y - radius)
+                        || block.hitTest(hitPos.x - radius, hitPos.y)
+                        || block.hitTest(hitPos.x, hitPos.y + radius)
+                        || block.hitTest(hitPos.x + radius, hitPos.y)
 
-                        || block.hitTest(hitPos.x - (ballActor._options.radius * Math.cos(45*Math.PI/180)), hitPos.y - ballActor._options.radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (ballActor._options.radius * Math.cos(60*Math.PI/180)), hitPos.y - ballActor._options.radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (ballActor._options.radius * Math.cos(30*Math.PI/180)), hitPos.y - ballActor._options.radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * Math.cos(45*Math.PI/180)), hitPos.y - radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * Math.cos(60*Math.PI/180)), hitPos.y - radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * Math.cos(30*Math.PI/180)), hitPos.y - radius * Math.sin((30*Math.PI/180)))
 
-                        || block.hitTest(hitPos.x + (ballActor._options.radius * Math.cos(45*Math.PI/180)), hitPos.y + ballActor._options.radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (ballActor._options.radius * Math.cos(60*Math.PI/180)), hitPos.y + ballActor._options.radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (ballActor._options.radius * Math.cos(30*Math.PI/180)), hitPos.y + ballActor._options.radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * Math.cos(45*Math.PI/180)), hitPos.y + radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * Math.cos(60*Math.PI/180)), hitPos.y + radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * Math.cos(30*Math.PI/180)), hitPos.y + radius * Math.sin((30*Math.PI/180)))
 
-                        || block.hitTest(hitPos.x + (ballActor._options.radius * Math.cos(45*Math.PI/180)), hitPos.y - ballActor._options.radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (ballActor._options.radius * Math.cos(60*Math.PI/180)), hitPos.y - ballActor._options.radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (ballActor._options.radius * Math.cos(30*Math.PI/180)), hitPos.y - ballActor._options.radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * Math.cos(45*Math.PI/180)), hitPos.y - radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * Math.cos(60*Math.PI/180)), hitPos.y - radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * Math.cos(30*Math.PI/180)), hitPos.y - radius * Math.sin((30*Math.PI/180)))
 
-                        || block.hitTest(hitPos.x - (ballActor._options.radius * Math.cos(45*Math.PI/180)), hitPos.y + ballActor._options.radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (ballActor._options.radius * Math.cos(60*Math.PI/180)), hitPos.y + ballActor._options.radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (ballActor._options.radius * Math.cos(30*Math.PI/180)), hitPos.y + ballActor._options.radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * Math.cos(45*Math.PI/180)), hitPos.y + radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * Math.cos(60*Math.PI/180)), hitPos.y + radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * Math.cos(30*Math.PI/180)), hitPos.y + radius * Math.sin((30*Math.PI/180)))
                     )
                     {
                         ball.alpha = 1;

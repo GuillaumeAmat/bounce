@@ -129,7 +129,7 @@ function (
 			}
 
 
-			
+
 		});
 	}
 
@@ -157,6 +157,11 @@ function (
 	actor.prototype.getShape = function () {
 
 		return this._circle;
+	}
+
+	actor.prototype.getOption = function (optionName) {
+
+		return this._options[optionName];
 	}
 
 	return actor;

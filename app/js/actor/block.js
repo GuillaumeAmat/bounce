@@ -68,5 +68,10 @@ function (
 		return this._block;
 	}
 
+	actor.prototype.getOption = function (optionName) {
+
+		return this._options[optionName];
+	}
+
 	return actor;
 });

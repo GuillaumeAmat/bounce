@@ -7,13 +7,18 @@ define([
 	'marionette',
 	'templates',
 	'easeljs',
+	'actor/ball',
+	'actor/block',
 ],
 function (
 
 	$,
 	Backbone,
 	Marionette,
-	Easeljs
+	templates,
+	EaselJS,
+	ballActor,
+	blockActor
 ) {
 
 	'use strict';
@@ -22,166 +27,139 @@ function (
 
 		template: JST['home.html'],
 
-        ui:
-        {
-            "canvas": "#canvas"
-        },
+		ui: {
 
+			'canvas': '#canvas',
+		},
 
+		initialize: function () {
 
-        onShow: function()
-        {
-            var self = this;
+			this._radio = Backbone.Wreqr.radio.channel('global');
 
-           //Create a stage by getting a reference to the canvas
-            this._stage = new createjs.Stage("canvas");
+			this._radio.reqres.setHandler('blocks', this.onRequestBlocks, this);
+		},
+
+		onRender: function() {
+
+			var self = this;
+
+			this._stage = new createjs.Stage(this.ui.canvas[0]);
+
 			createjs.Touch.enable(this._stage);
 
 			this._stage.enableMouseOver(10);
 			this._stage.mouseMoveOutside = true;
 
 
+			createjs.Ticker.addEventListener('tick', function (e) {
 
-            window.addEventListener('resize',
-                    function(e)
-                    {
-                        self.onResize();
-                    }
-                , false);
+				self.onTick(e);
+			});
 
 
+			$(window).on('resize', function (e) {
 
-            createjs.Ticker.addEventListener("tick", function(e){
+				self.onResize(e);
+			})
+			.trigger('resize');
+		},
 
-                    self.onTick(e);
-                });
-            
-            this.init();
-        },
+		onTick: function (e) {
 
-        onTick: function (event)
-        {
-            this._stage.update();
-            // Actions carried out each tick (aka frame)
-            if (!event.paused)
-            {
-                
-           // Actions carried out when the Ticker is not paused.
-            }
-        },
+			if (!e.paused) {
 
-       
-        onResize: function ()
-        {
-            this.init();
-        },
+				this._stage.update(e);
+			}
+		},
+
+		onResize: function (e) {
+
+			this.init();
+		},
 
 
-        init: function()
-        {
+		init: function() {
+
             var self = this;
 
-            
             this._stage.canvas.width = window.innerWidth;
-            this._stage.canvas.height = window.innerHeight;     
-            this._width = this._stage.canvas.width;
-            this._height = this._stage.canvas.height;
-
-            
-
-            var fond = new createjs.Shape();
-            fond.graphics.beginFill("#333").drawRect(0, 0, this._width, this._height);
-            this._stage.addChild(fond);
+            this._stage.canvas.height = window.innerHeight;
 
 
-            this._bloc2 = new createjs.Shape();
-            this._bloc2.width = 100;
-            this._bloc2.height = 5;
-            this._bloc2.graphics.beginFill("red").drawRect(0, 0, this._bloc2.width, this._bloc2.height);
-            this._bloc2.hyp = Math.sqrt(this._bloc2.width * this._bloc2.width + this._bloc2.height*this._bloc2.height);
-            this._bloc2.x = 200;
-            this._bloc2.y = 200;
-            this._bloc2.rotation = 45;
-            this._stage.addChild(this._bloc2);
+			if (this._fond) {
+
+				this._stage.removeChild(this._fond);
+			}
+
+            this._fond = new createjs.Shape();
+            this._fond.graphics.beginFill("#333").drawRect(0, 0, this._stage.canvas.width, this._stage.canvas.height);
+            this._stage.addChild(this._fond);
 
 
 
-            this._circle = new createjs.Shape();
-            this._circle.radius = 10;
-            this._circle.graphics.beginFill("red").drawCircle(0, 0, this._circle.radius);
-            
-            this._circle.x = 300;
-            this._circle.y = 300;
-            this._stage.addChild( this._circle);
-            this._stage.update();
+			if (this._block) {
 
-			this._circle.on('mousedown', function (e) {
+				this._block.destroy();
+			}
 
-				this.offset = {x: this.x - e.stageX, y: this.y - e.stageY};
-			});
+			var width = 100, height = 5;
+			this._block = new blockActor({
 
-			this._circle.on('pressmove', function (e) {
-
-				this.x = e.stageX + this.offset.x;
-				this.y = e.stageY + this.offset.y;
-
-                var hitPos = self._bloc2.globalToLocal(this.x, this.y);
-
-
-               if(
-                   self._bloc2.hitTest(hitPos.x, hitPos.y - 10)
-                || self._bloc2.hitTest(hitPos.x - 10, hitPos.y)
-                || self._bloc2.hitTest(hitPos.x, hitPos.y + 10)
-                || self._bloc2.hitTest(hitPos.x + 10, hitPos.y)
-                
-                || self._bloc2.hitTest(hitPos.x - (this.radius * Math.cos(45*Math.PI/180)), hitPos.y - this.radius * Math.sin((45*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x - (this.radius * Math.cos(60*Math.PI/180)), hitPos.y - this.radius * Math.sin((60*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x - (this.radius * Math.cos(30*Math.PI/180)), hitPos.y - this.radius * Math.sin((30*Math.PI/180)))
-                
-                || self._bloc2.hitTest(hitPos.x + (this.radius * Math.cos(45*Math.PI/180)), hitPos.y + this.radius * Math.sin((45*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x + (this.radius * Math.cos(60*Math.PI/180)), hitPos.y + this.radius * Math.sin((60*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x + (this.radius * Math.cos(30*Math.PI/180)), hitPos.y + this.radius * Math.sin((30*Math.PI/180)))
-
-                || self._bloc2.hitTest(hitPos.x + (this.radius * Math.cos(45*Math.PI/180)), hitPos.y - this.radius * Math.sin((45*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x + (this.radius * Math.cos(60*Math.PI/180)), hitPos.y - this.radius * Math.sin((60*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x + (this.radius * Math.cos(30*Math.PI/180)), hitPos.y - this.radius * Math.sin((30*Math.PI/180)))
-
-                || self._bloc2.hitTest(hitPos.x - (this.radius * Math.cos(45*Math.PI/180)), hitPos.y + this.radius * Math.sin((45*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x - (this.radius * Math.cos(60*Math.PI/180)), hitPos.y + this.radius * Math.sin((60*Math.PI/180)))
-                || self._bloc2.hitTest(hitPos.x - (this.radius * Math.cos(30*Math.PI/180)), hitPos.y + this.radius * Math.sin((30*Math.PI/180)))
-                )
-                {
-                    console.log("true");
-                }
-                else
-                {
-                    console.log("false");
-                }
+				'stage': this._stage,
+				'fillColor': '#7355D9',
+				'x': 200,
+				'y': 200,
+				'width': width,
+				'height': height,
+				'rotation': 0,
+				'hyp': Math.sqrt(width * width + height * height),
 			});
 
 
+
+			if (this._ball) {
+
+				this._ball.destroy();
+			}
+
+			this._ball = new ballActor({
+
+				'stage': this._stage,
+				'fillColor': '#bada55',
+				'x': 100,
+				'y': 100,
+				'radius': 20,
+			});
         },
 
-        getWidthPercent: function (number)
-        {
-            return (this._width * number / 100);
-        },
-        
-        getHeightPercent: function (number)
-        {
-            return (this._height * number / 100);
+        getWidthPercent: function (number) {
+
+            return (this._stage.canvas.width * number / 100);
         },
 
-        getXPercent: function (number)
-        {
-            return (this._width * number / 100);
+        getHeightPercent: function (number) {
+
+            return (this._stage.canvas.height * number / 100);
         },
 
-        getYPercent: function (number)
-        {
-            return (this._height * number / 100);
+        getXPercent: function (number) {
+
+            return (this._stage.canvas.width * number / 100);
         },
 
-        
+        getYPercent: function (number) {
+
+            return (this._stage.canvas.height * number / 100);
+        },
+
+		onRequestBlocks: function () {
+
+			if (!this._block) {
+
+				return false;
+			}
+
+			return [this._block];
+		}
 	});
 });

@@ -81,14 +81,12 @@ function (
 
                     var block   = blockActor.getShape();
                     var ball    = ballActor.getShape();
-                    
+
                     //var pt = this.localToGlobal(x, y);
                     var hitPos = ball.localToGlobal(100, 100);
                     var hitPos = block.globalToLocal(hitPos.x, hitPos.y);
 
-                  
 
-                    console.log(Math.round(hitPos.x)+'-'+Math.round(hitPos.y) + '|'+Math.round(self._stage.mouseX)+'-'+Math.round(self._stage.mouseY));
 
                     if(
                         block.hitTest(hitPos.x, hitPos.y)
@@ -114,18 +112,16 @@ function (
                     )
                     {
                         ballActor.alpha = 1;
-                        console.log('true');
                     }
                     else
                     {
                         ballActor.alpha = 0.2;
-                        console.log('false'+ballActor._options.radius);
                     }
                 });
 			});
 
 
-            
+
 			if (!e.paused) {
 				this._stage.update(e);
 			}

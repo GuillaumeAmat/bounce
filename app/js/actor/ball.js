@@ -120,53 +120,16 @@ function (
 
 			this.x -= speedX;
 			this.y -= speedY;
-			speedX *= .9;
-			speedY *= .9;
+			speedX *= .95;
+			speedY *= .95;
 
-			if (speedX < 1 && speedY < 1 && speedX > -1 && speedY > -1) {
+			if (speedX < 0.5 && speedY < 0.5 && speedX > -0.5 && speedY > -0.5) {
 
 				this.removeAllEventListeners('tick');
 			}
 
 
-			var blocks = self._radio.reqres.request('blocks'),
-			circle = this;
-
-			blocks.forEach(function (blockActor) {
-
-				var block = blockActor.getShape(),
-				hitPos = block.globalToLocal(circle.x, circle.y);
-
-				if(
-					block.hitTest(hitPos.x, hitPos.y - 10)
-					|| block.hitTest(hitPos.x - 10, hitPos.y)
-					|| block.hitTest(hitPos.x, hitPos.y + 10)
-					|| block.hitTest(hitPos.x + 10, hitPos.y)
-
-					|| block.hitTest(hitPos.x - (circle.radius * Math.cos(45*Math.PI/180)), hitPos.y - circle.radius * Math.sin((45*Math.PI/180)))
-					|| block.hitTest(hitPos.x - (circle.radius * Math.cos(60*Math.PI/180)), hitPos.y - circle.radius * Math.sin((60*Math.PI/180)))
-					|| block.hitTest(hitPos.x - (circle.radius * Math.cos(30*Math.PI/180)), hitPos.y - circle.radius * Math.sin((30*Math.PI/180)))
-
-					|| block.hitTest(hitPos.x + (circle.radius * Math.cos(45*Math.PI/180)), hitPos.y + circle.radius * Math.sin((45*Math.PI/180)))
-					|| block.hitTest(hitPos.x + (circle.radius * Math.cos(60*Math.PI/180)), hitPos.y + circle.radius * Math.sin((60*Math.PI/180)))
-					|| block.hitTest(hitPos.x + (circle.radius * Math.cos(30*Math.PI/180)), hitPos.y + circle.radius * Math.sin((30*Math.PI/180)))
-
-					|| block.hitTest(hitPos.x + (circle.radius * Math.cos(45*Math.PI/180)), hitPos.y - circle.radius * Math.sin((45*Math.PI/180)))
-					|| block.hitTest(hitPos.x + (circle.radius * Math.cos(60*Math.PI/180)), hitPos.y - circle.radius * Math.sin((60*Math.PI/180)))
-					|| block.hitTest(hitPos.x + (circle.radius * Math.cos(30*Math.PI/180)), hitPos.y - circle.radius * Math.sin((30*Math.PI/180)))
-
-					|| block.hitTest(hitPos.x - (circle.radius * Math.cos(45*Math.PI/180)), hitPos.y + circle.radius * Math.sin((45*Math.PI/180)))
-					|| block.hitTest(hitPos.x - (circle.radius * Math.cos(60*Math.PI/180)), hitPos.y + circle.radius * Math.sin((60*Math.PI/180)))
-					|| block.hitTest(hitPos.x - (circle.radius * Math.cos(30*Math.PI/180)), hitPos.y + circle.radius * Math.sin((30*Math.PI/180)))
-				)
-				{
-					console.log('true');
-				}
-				else
-				{
-					console.log('false');
-				}
-			});
+			
 		});
 	}
 

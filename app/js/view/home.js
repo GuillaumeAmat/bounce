@@ -37,6 +37,7 @@ function (
 			this._radio = Backbone.Wreqr.radio.channel('global');
 
 			this._radio.reqres.setHandler('blocks', this.onRequestBlocks, this);
+			this._radio.reqres.setHandler('balls', this.onRequestBalls, this);
 		},
 
 		onRender: function() {
@@ -51,7 +52,7 @@ function (
 			this._stage.mouseMoveOutside = true;
 
 
-			createjs.Ticker.addEventListener('tick', function (e) {
+			createjs.Ticker.addEventListener('tick', function (e){
 
 				self.onTick(e);
 			});
@@ -64,10 +65,68 @@ function (
 			.trigger('resize');
 		},
 
-		onTick: function (e) {
+		onTick: function (e)
+        {
 
+            var self = this;
+
+            var blocks = this._radio.reqres.request('blocks');
+            var balls = this._radio.reqres.request('balls');
+
+			blocks.forEach(function (blockActor)
+            {
+
+                balls.forEach(function (ballActor)
+                {
+
+                    var block   = blockActor.getShape();
+                    var ball    = ballActor.getShape();
+                    
+                    //var pt = this.localToGlobal(x, y);
+                    var hitPos = ball.localToGlobal(100, 100);
+                    var hitPos = block.globalToLocal(hitPos.x, hitPos.y);
+
+                  
+
+                    console.log(Math.round(hitPos.x)+'-'+Math.round(hitPos.y) + '|'+Math.round(self._stage.mouseX)+'-'+Math.round(self._stage.mouseY));
+
+                    if(
+                        block.hitTest(hitPos.x, hitPos.y)
+                        /*|| block.hitTest(hitPos.x - ballActor._options.radius, hitPos.y)
+                        || block.hitTest(hitPos.x, hitPos.y + ballActor._options.radius)
+                        || block.hitTest(hitPos.x + ballActor._options.radius, hitPos.y)*/
+
+                        /*|| block.hitTest(hitPos.x - (self._options.radius * Math.cos(45*Math.PI/180)), hitPos.y - self._options.radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (self._options.radius * Math.cos(60*Math.PI/180)), hitPos.y - self._options.radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (self._options.radius * Math.cos(30*Math.PI/180)), hitPos.y - self._options.radius * Math.sin((30*Math.PI/180)))
+
+                        || block.hitTest(hitPos.x + (self._options.radius * Math.cos(45*Math.PI/180)), hitPos.y + self._options.radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (self._options.radius * Math.cos(60*Math.PI/180)), hitPos.y + self._options.radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (self._options.radius * Math.cos(30*Math.PI/180)), hitPos.y + self._options.radius * Math.sin((30*Math.PI/180)))
+
+                        || block.hitTest(hitPos.x + (self._options.radius * Math.cos(45*Math.PI/180)), hitPos.y - self._options.radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (self._options.radius * Math.cos(60*Math.PI/180)), hitPos.y - self._options.radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (self._options.radius * Math.cos(30*Math.PI/180)), hitPos.y - self._options.radius * Math.sin((30*Math.PI/180)))
+
+                        || block.hitTest(hitPos.x - (self._options.radius * Math.cos(45*Math.PI/180)), hitPos.y + self._options.radius * Math.sin((45*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (self._options.radius * Math.cos(60*Math.PI/180)), hitPos.y + self._options.radius * Math.sin((60*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (self._options.radius * Math.cos(30*Math.PI/180)), hitPos.y + self._options.radius * Math.sin((30*Math.PI/180)))*/
+                    )
+                    {
+                        ballActor.alpha = 1;
+                        console.log('true');
+                    }
+                    else
+                    {
+                        ballActor.alpha = 0.2;
+                        console.log('false'+ballActor._options.radius);
+                    }
+                });
+			});
+
+
+            
 			if (!e.paused) {
-
 				this._stage.update(e);
 			}
 		},
@@ -102,7 +161,7 @@ function (
 				this._block.destroy();
 			}
 
-			var width = 100, height = 5;
+			var width = 100, height = 100;
 			this._block = new blockActor({
 
 				'stage': this._stage,
@@ -160,6 +219,16 @@ function (
 			}
 
 			return [this._block];
+		},
+
+		onRequestBalls: function () {
+
+			if (!this._ball) {
+
+				return false;
+			}
+
+			return [this._ball];
 		}
 	});
 });

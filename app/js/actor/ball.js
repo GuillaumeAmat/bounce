@@ -6,11 +6,15 @@ define([
 	'backbone',
 	'marionette',
 	'easeljs',
+	'settings'
 ],
 function (
 
 	_,
-	Backbone
+	Backbone,
+	Marionette,
+	EaselJS,
+	settings
 ) {
 
 	'use strict';
@@ -120,10 +124,15 @@ function (
 
 			this.x -= speedX;
 			this.y -= speedY;
-			speedX *= .95;
-			speedY *= .95;
+			speedX *= settings.ballVelocity;
+			speedY *= settings.ballVelocity;
 
-			if (speedX < 0.5 && speedY < 0.5 && speedX > -0.5 && speedY > -0.5) {
+			if (
+					speedX < settings.ballSpeedStop
+					&& speedY < settings.ballSpeedStop
+					&& speedX > -settings.ballSpeedStop
+					&& speedY > -settings.ballSpeedStop
+				) {
 
 				this.removeAllEventListeners('tick');
 			}

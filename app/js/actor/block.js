@@ -6,11 +6,15 @@ define([
 	'backbone',
 	'marionette',
 	'easeljs',
+	'settings'
 ],
 function (
 
 	_,
-	Backbone
+	Backbone,
+	Marionette,
+	EaselJS,
+	settings
 ) {
 
 	'use strict';

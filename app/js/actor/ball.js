@@ -67,6 +67,8 @@ function (
 
 	actor.prototype.onMouseDown = function (e) {
 
+		this._circle.removeAllEventListeners('tick');
+
 		var x = this._circle.x - e.stageX,
 		y = this._circle.y - e.stageY;
 
@@ -175,8 +177,14 @@ function (
 		}
 	}
 
+	actor.prototype.cleanLastPos = function () {
+
+		this._lastPos = [];
+	}
+
 	actor.prototype.destroy = function () {
 
+		this._circle.removeAllEventListeners('tick');
 		return this._stage.removeChild(this._circle);
 	}
 

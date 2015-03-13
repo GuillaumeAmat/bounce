@@ -46,7 +46,9 @@ function (
 
 		this._block.graphics
 		.beginFill(this._options.fillColor)
-		.drawRect(this._options.x, this._options.y, this._options.width, this._options.height);
+		.drawRect(0, 0, this._options.width, this._options.height);
+		this._block.x = this._options.x;
+		this._block.y = this._options.y;
 
 		this._block.rotation = this._options.rotation;
 

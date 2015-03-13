@@ -43,7 +43,10 @@ function (
 
 		this._circle.graphics
 		.beginFill(this._options.fillColor)
-		.drawCircle(this._options.x, this._options.y, this._options.radius);
+		.drawCircle(0, 0, this._options.radius);
+		this._circle.x = this._options.x;
+		this._circle.y = this._options.y;
+
 
 		this._circle.on('mousedown', function (e) {
 

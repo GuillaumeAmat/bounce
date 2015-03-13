@@ -7,6 +7,7 @@ define([
 	'marionette',
 	'templates',
 	'easeljs',
+	'settings',
 	'actor/ball',
 	'actor/block',
 ],
@@ -17,6 +18,7 @@ function (
 	Marionette,
 	templates,
 	EaselJS,
+	settings,
 	ballActor,
 	blockActor
 ) {
@@ -89,21 +91,21 @@ function (
                         || block.hitTest(hitPos.x, hitPos.y + radius)
                         || block.hitTest(hitPos.x + radius, hitPos.y)
 
-                        || block.hitTest(hitPos.x - (radius * Math.cos(45*Math.PI/180)), hitPos.y - radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (radius * Math.cos(60*Math.PI/180)), hitPos.y - radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (radius * Math.cos(30*Math.PI/180)), hitPos.y - radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * settings.cos45), hitPos.y - (radius * settings.sin45))
+                        || block.hitTest(hitPos.x - (radius * settings.cos60), hitPos.y - (radius * settings.sin60))
+                        || block.hitTest(hitPos.x - (radius * settings.cos30), hitPos.y - (radius * settings.sin30))
 
-                        || block.hitTest(hitPos.x + (radius * Math.cos(45*Math.PI/180)), hitPos.y + radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (radius * Math.cos(60*Math.PI/180)), hitPos.y + radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (radius * Math.cos(30*Math.PI/180)), hitPos.y + radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * settings.cos45), hitPos.y + (radius * settings.sin45))
+                        || block.hitTest(hitPos.x + (radius * settings.cos60), hitPos.y + (radius * settings.sin60))
+                        || block.hitTest(hitPos.x + (radius * settings.cos30), hitPos.y + (radius * settings.sin30))
 
-                        || block.hitTest(hitPos.x + (radius * Math.cos(45*Math.PI/180)), hitPos.y - radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (radius * Math.cos(60*Math.PI/180)), hitPos.y - radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x + (radius * Math.cos(30*Math.PI/180)), hitPos.y - radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x + (radius * settings.cos45), hitPos.y - (radius * settings.sin45))
+                        || block.hitTest(hitPos.x + (radius * settings.cos60), hitPos.y - (radius * settings.sin60))
+                        || block.hitTest(hitPos.x + (radius * settings.cos30), hitPos.y - (radius * settings.sin30))
 
-                        || block.hitTest(hitPos.x - (radius * Math.cos(45*Math.PI/180)), hitPos.y + radius * Math.sin((45*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (radius * Math.cos(60*Math.PI/180)), hitPos.y + radius * Math.sin((60*Math.PI/180)))
-                        || block.hitTest(hitPos.x - (radius * Math.cos(30*Math.PI/180)), hitPos.y + radius * Math.sin((30*Math.PI/180)))
+                        || block.hitTest(hitPos.x - (radius * settings.cos45), hitPos.y + (radius * settings.sin45))
+                        || block.hitTest(hitPos.x - (radius * settings.cos60), hitPos.y + (radius * settings.sin60))
+                        || block.hitTest(hitPos.x - (radius * settings.cos30), hitPos.y + (radius * settings.sin30))
                     )
                     {
                         ball.alpha = 1;

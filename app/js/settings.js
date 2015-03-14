@@ -8,6 +8,7 @@ define([], function () {
 
 		'ballVelocity': .95,
 		'ballSpeedStop': .5,
+		'ballStartInertiaDelay': 100,
 
 		'cos30': Math.cos(30 * Math.PI / 180),
 		'cos45': Math.cos(45 * Math.PI / 180),

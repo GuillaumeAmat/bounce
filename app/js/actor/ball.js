@@ -91,16 +91,20 @@ function (
 		this._circle.x = x;
 		this._circle.y = y;
 
-		this.registerLastPos(x, y);
+		this.registerLastPos(x, y, e.timeStamp);
 	}
 
 	actor.prototype.onPressUp = function (e) {
 
 		var self = this,
 		speedX = 0,
-		speedY = 0;
+		speedY = 0,
+		x = e.stageX + this._circle.offset.x,
+		y = e.stageY + this._circle.offset.y;
 
-		if ( this._lastPos.length === 0 ) {
+		this.registerLastPos(x, y, e.timeStamp);
+
+		if ( this._lastPos.length <= 1 ) {
 
 			return;
 		}
@@ -158,9 +162,25 @@ function (
 		});
 	}
 
-	actor.prototype.registerLastPos = function (x, y) {
+	actor.prototype.registerLastPos = function (x, y, timeStamp) {
 
-		this._lastPos.push({ 'x': x, 'y': y });
+		this._lastPos.push({
+
+			'x': x,
+			'y': y,
+			'timeStamp': timeStamp
+		});
+
+		if (this._lastPos.length >= 2) {
+
+			var posDelay = this._lastPos[this._lastPos.length - 1].timeStamp - this._lastPos[this._lastPos.length - 2].timeStamp;
+
+			if (posDelay > settings.ballStartInertiaDelay) {
+
+				this.cleanLastPos();
+				return;
+			}
+		}
 
 		if (this._lastPos.length > 5) {
 

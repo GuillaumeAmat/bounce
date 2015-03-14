@@ -76,16 +76,16 @@ function (
 
             balls.forEach(function (ballActor)
             {
-                var ball = ballActor.getShape(),
+                var ball = ballActor.get('shape'),
                 isHit = false;
-                
+
                 blocks.forEach(function (blockActor)
                 {
                     if ( isHit === false)
                     {
-                        var block = blockActor.getShape(),
+                        var block = blockActor.get('shape'),
                         hitPos = ball.localToLocal(0, 0, block),
-                        radius = ballActor.getOption('radius');
+                        radius = ballActor.get('radius');
 
 
                         var radiusCos45 = (radius * settings.cos45),
@@ -104,15 +104,15 @@ function (
                             || block.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin45)
                             || block.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin60)
                             || block.hitTest(hitPos.x - radiusCos30, hitPos.y - radiusSin30)
-                                                                                      
+
                             || block.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin45)
                             || block.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin60)
                             || block.hitTest(hitPos.x + radiusCos30, hitPos.y + radiusSin30)
-                                                                                      
+
                             || block.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin45)
                             || block.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin60)
                             || block.hitTest(hitPos.x + radiusCos30, hitPos.y - radiusSin30)
-                                                                                      
+
                             || block.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin45)
                             || block.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin60)
                             || block.hitTest(hitPos.x - radiusCos30, hitPos.y + radiusSin30)
@@ -157,15 +157,18 @@ function (
 
 
 
-			if (this._block) {
+			if (this._blocks) {
 
-				this._block.destroy();
+				this._blocks.forEach(function (blockActor) {
+
+					blockActor.destroy();
+				});
 			}
 
 			var width = 100, height = 20;
 
             this._blocks = [];
-            
+
 			this._blocks.push(new blockActor({
 
 				'name2': 'Block1',
@@ -207,11 +210,13 @@ function (
 
 
 
-			if (this._ball) {
+			if (this._balls) {
 
-				this._ball.destroy();
+				this._balls.forEach(function (ballActor) {
+
+					ballActor.destroy();
+				});
 			}
-
 
             this._balls = [];
 

@@ -19,196 +19,190 @@ function (
 
 	'use strict';
 
-	var defaultOptions = {
 
-		'stage': null,
-		'x': 0,
-		'y': 0,
-		'radius': 40,
-		'fillColor': 'black'
-	};
+	return Backbone.Model.extend({
 
-	var actor = function(options) {
+		defaults: {
 
-		if (!options.stage) {
+			'stage': null,
+			'shape': null,
+			'x': 0,
+			'y': 0,
+			'radius': 40,
+			'fillColor': 'black'
+		},
 
-			return false;
-		}
+		initialize: function () {
 
-		this._radio = Backbone.Wreqr.radio.channel('global');
+			this.on('destroy', this.onDestroy, this);
 
-		this._options = _.extend({}, defaultOptions, options);
+			this._radio = Backbone.Wreqr.radio.channel('global');
 
-		var self = this;
+			this._lastPos = [];
 
-		this._lastPos = [];
-		this._stage = this._options.stage;
-		this._circle = new createjs.Shape();
+			var self = this,
+			shape = new createjs.Shape(),
+			stage = this.get('stage');
 
-		this._circle.graphics
-		.beginFill(this._options.fillColor)
-		.drawCircle(0, 0, this._options.radius);
-		this._circle.x = this._options.x;
-		this._circle.y = this._options.y;
-
-
-		this._circle.on('mousedown', function (e) {
-
-			self.onMouseDown(e);
-		});
-
-		this._circle.on('pressmove', function (e) {
-
-			self.onPressMove(e);
-		});
-
-		this._circle.on('pressup', function (e) {
-
-			self.onPressUp(e);
-		});
-
-		this._stage.addChild(this._circle);
-
-		return this;
-	}
-
-	actor.prototype.onMouseDown = function (e) {
-
-		this._circle.removeAllEventListeners('tick');
-		this.cleanLastPos();
-
-		var x = this._circle.x - e.stageX,
-		y = this._circle.y - e.stageY;
-
-		this._circle.offset = { 'x': x, 'y': y };
-	}
-
-	actor.prototype.onPressMove = function (e) {
-
-		var x = e.stageX + this._circle.offset.x,
-		y = e.stageY + this._circle.offset.y;
-
-		this._circle.x = x;
-		this._circle.y = y;
-
-		this.registerLastPos(x, y, e.timeStamp);
-	}
-
-	actor.prototype.onPressUp = function (e) {
-
-		var self = this,
-		speedX = 0,
-		speedY = 0,
-		x = e.stageX + this._circle.offset.x,
-		y = e.stageY + this._circle.offset.y;
-
-		this.registerLastPos(x, y, e.timeStamp);
-
-		if ( this._lastPos.length <= 1 ) {
-
-			return;
-		}
-
-		speedX = this._lastPos[0].x - this._lastPos[this._lastPos.length - 1].x;
-		speedY = this._lastPos[0].y - this._lastPos[this._lastPos.length - 1].y;
-
-		this._circle.on('tick', function (e) {
-
-			this.x -= speedX;
-			this.y -= speedY;
-
-			var circleMinX = this.x - self._options.radius,
-			circleMaxX = this.x + self._options.radius,
-			circleMinY = this.y - self._options.radius,
-			circleMaxY = this.y + self._options.radius;
+			shape.graphics
+			.beginFill(this.get('fillColor'))
+			.drawCircle(0, 0, this.get('radius'));
+			shape.x = this.get('x');
+			shape.y = this.get('y');
 
 
-			if (circleMinX < 0) {
+			shape.on('mousedown', function (e) {
 
-				this.x -= circleMinX * 2;
-				speedX *= -1;
-			}
+				self.onMouseDown(e);
+			});
 
-			if (circleMaxX > self._stage.canvas.width) {
+			shape.on('pressmove', function (e) {
 
-				this.x -= (circleMaxX - self._stage.canvas.width) * 2;
-				speedX *= -1;
-			}
+				self.onPressMove(e);
+			});
 
-			if (circleMinY < 0) {
+			shape.on('pressup', function (e) {
 
-				this.y -= circleMinY * 2;
-				speedY *= -1;
-			}
+				self.onPressUp(e);
+			});
 
-			if (circleMaxY > self._stage.canvas.height) {
+			stage.addChild(shape);
 
-				this.y -= (circleMaxY - self._stage.canvas.height) * 2;
-				speedY *= -1;
-			}
+			this.set('shape', shape);
+		},
 
-			speedX *= settings.ballVelocity;
-			speedY *= settings.ballVelocity;
+		onMouseDown: function (e) {
 
-			if (
-					speedX < settings.ballSpeedStop
-					&& speedY < settings.ballSpeedStop
-					&& speedX > -settings.ballSpeedStop
-					&& speedY > -settings.ballSpeedStop
-				) {
+			var circle = this.get('shape');
 
-				this.removeAllEventListeners('tick');
-			}
-		});
-	}
+			circle.removeAllEventListeners('tick');
+			this.cleanLastPos();
 
-	actor.prototype.registerLastPos = function (x, y, timeStamp) {
+			var x = circle.x - e.stageX,
+			y = circle.y - e.stageY;
 
-		this._lastPos.push({
+			circle.offset = { 'x': x, 'y': y };
+		},
 
-			'x': x,
-			'y': y,
-			'timeStamp': timeStamp
-		});
+		onPressMove: function (e) {
 
-		if (this._lastPos.length >= 2) {
+			var circle = this.get('shape'),
+			x = e.stageX + circle.offset.x,
+			y = e.stageY + circle.offset.y;
 
-			var posDelay = this._lastPos[this._lastPos.length - 1].timeStamp - this._lastPos[this._lastPos.length - 2].timeStamp;
+			circle.x = x;
+			circle.y = y;
 
-			if (posDelay > settings.ballStartInertiaDelay) {
+			this.registerLastPos(x, y, e.timeStamp);
+		},
 
-				this.cleanLastPos();
+		onPressUp: function (e) {
+
+			var self = this,
+			circle = this.get('shape'),
+			speedX = 0,
+			speedY = 0,
+			x = e.stageX + circle.offset.x,
+			y = e.stageY + circle.offset.y;
+
+			this.registerLastPos(x, y, e.timeStamp);
+
+			if ( this._lastPos.length <= 1 ) {
+
 				return;
 			}
-		}
 
-		if (this._lastPos.length > 5) {
+			speedX = this._lastPos[0].x - this._lastPos[this._lastPos.length - 1].x;
+			speedY = this._lastPos[0].y - this._lastPos[this._lastPos.length - 1].y;
 
-			this._lastPos.shift();
-		}
-	}
+			circle.on('tick', function (e) {
 
-	actor.prototype.cleanLastPos = function () {
+				this.x -= speedX;
+				this.y -= speedY;
 
-		this._lastPos = [];
-	}
+				var circleMinX = this.x - self.get('radius'),
+				circleMaxX = this.x + self.get('radius'),
+				circleMinY = this.y - self.get('radius'),
+				circleMaxY = this.y + self.get('radius');
 
-	actor.prototype.destroy = function () {
 
-		this._circle.removeAllEventListeners('tick');
-        
-		return this._stage.removeChild(this._circle);
-	}
+				if (circleMinX < 0) {
 
-	actor.prototype.getShape = function () {
+					this.x -= circleMinX * 2;
+					speedX *= -1;
+				}
 
-		return this._circle;
-	}
+				if (circleMaxX > self.get('stage').canvas.width) {
 
-	actor.prototype.getOption = function (optionName) {
+					this.x -= (circleMaxX - self.get('stage').canvas.width) * 2;
+					speedX *= -1;
+				}
 
-		return this._options[optionName];
-	}
+				if (circleMinY < 0) {
 
-	return actor;
+					this.y -= circleMinY * 2;
+					speedY *= -1;
+				}
+
+				if (circleMaxY > self.get('stage').canvas.height) {
+
+					this.y -= (circleMaxY - self.get('stage').canvas.height) * 2;
+					speedY *= -1;
+				}
+
+				speedX *= settings.ballVelocity;
+				speedY *= settings.ballVelocity;
+
+				if (
+						speedX < settings.ballSpeedStop
+						&& speedY < settings.ballSpeedStop
+						&& speedX > -settings.ballSpeedStop
+						&& speedY > -settings.ballSpeedStop
+					) {
+
+					this.removeAllEventListeners('tick');
+				}
+			});
+		},
+
+		registerLastPos: function (x, y, timeStamp) {
+
+			this._lastPos.push({
+
+				'x': x,
+				'y': y,
+				'timeStamp': timeStamp
+			});
+
+			if (this._lastPos.length >= 2) {
+
+				var posDelay = this._lastPos[this._lastPos.length - 1].timeStamp - this._lastPos[this._lastPos.length - 2].timeStamp;
+
+				if (posDelay > settings.ballStartInertiaDelay) {
+
+					this.cleanLastPos();
+					return;
+				}
+			}
+
+			if (this._lastPos.length > 5) {
+
+				this._lastPos.shift();
+			}
+		},
+
+		cleanLastPos: function () {
+
+			this._lastPos = [];
+		},
+
+		onDestroy: function () {
+
+			var stage = this.get('stage'),
+			shape = this.get('shape');
+
+			shape.removeAllEventListeners('tick');
+			return stage.removeChild(shape);
+		},
+	});
 });

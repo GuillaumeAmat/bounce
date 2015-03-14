@@ -19,63 +19,54 @@ function (
 
 	'use strict';
 
-	var defaultOptions = {
 
-		'stage': null,
-		'fillColor': 'black',
-		'x': 0,
-		'y': 0,
-		'radius': 40,
-		'width': 40,
-		'height': 40,
-		'rotation': 0,
-		'hyp': Math.sqrt(40 * 40 + 40 * 40),
-	};
+	return Backbone.Model.extend({
 
-	var actor = function(options) {
+		defaults: {
 
-		if (!options.stage) {
+			'stage': null,
+			'shape': null,
+			'fillColor': 'black',
+			'x': 0,
+			'y': 0,
+			'radius': 40,
+			'width': 40,
+			'height': 40,
+			'rotation': 0,
+			'hyp': Math.sqrt(40 * 40 + 40 * 40),
+		},
 
-			return false;
-		}
+		initialize: function () {
 
-		this._radio = Backbone.Wreqr.radio.channel('global');
+			this.on('destroy', this.onDestroy, this);
 
-		this._options = _.extend({}, defaultOptions, options);
+			this._radio = Backbone.Wreqr.radio.channel('global');
 
-		var self = this;
+			this._lastPos = [];
 
-		this._stage = this._options.stage;
-		this._block = new createjs.Shape();
+			var self = this,
+			shape = new createjs.Shape(),
+			stage = this.get('stage');
 
-		this._block.graphics
-		.beginFill(this._options.fillColor)
-		.drawRect(0, 0, this._options.width, this._options.height);
-		this._block.x = this._options.x;
-		this._block.y = this._options.y;
+			shape.graphics
+			.beginFill(this.get('fillColor'))
+			.drawRect(0, 0, this.get('width'), this.get('height'));
+			shape.x = this.get('x');
+			shape.y = this.get('y');
+			shape.rotation = this.get('rotation');
 
-		this._block.rotation = this._options.rotation;
+			stage.addChild(shape);
 
-		this._stage.addChild(this._block);
+			this.set('shape', shape);
+		},
 
-		return this;
-	}
+		onDestroy: function () {
 
-	actor.prototype.destroy = function () {
+			var stage = this.get('stage'),
+			shape = this.get('shape');
 
-		this._block.removeAllEventListeners('tick');
-		return this._stage.removeChild(this._block);
-	}
-
-	actor.prototype.getShape = function () {
-
-		return this._block;
-	}
-
-	actor.prototype.getOption = function (optionName) {
-
-		return this._options[optionName];
-	}
-
-	return actor;
+			shape.removeAllEventListeners('tick');
+			return stage.removeChild(shape);
+		},
+	});
 });

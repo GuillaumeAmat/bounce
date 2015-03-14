@@ -33,6 +33,7 @@ function (
 			'regX': 0,
 			'regY': 0,
 			'rotation': 0,
+			'isMoving': false,
 		},
 
 		initialize: function () {
@@ -96,6 +97,8 @@ function (
 			circle.x = x;
 			circle.y = y;
 
+			this.set('isMoving', true);
+
 			this.registerLastPos(x, y, e.timeStamp);
 		},
 
@@ -112,6 +115,7 @@ function (
 
 			if ( this._lastPos.length <= 1 ) {
 
+				this.set('isMoving', false);
 				return;
 			}
 
@@ -181,6 +185,7 @@ function (
 						&& speedY > -settings.ballSpeedStop
 					) {
 
+					self.set('isMoving', false);
 					this.removeAllEventListeners('tick');
 				}
 			});

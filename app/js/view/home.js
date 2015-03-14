@@ -83,6 +83,11 @@ function (
 
             _.each(this._balls.models, function (ball)
             {
+				if (ball.get('isMoving') === false) {
+
+					return;
+				}
+
                 var ballShape = ball.get('shape'),
                 isHit = false;
 
@@ -246,7 +251,7 @@ function (
             this.scoreText.text = this.score;
             this.addBall();
         },
-        
+
         addBall: function() {
 
             this._balls.add(new ballModel({

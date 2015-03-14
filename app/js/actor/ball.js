@@ -97,7 +97,15 @@ function (
 	actor.prototype.onPressUp = function (e) {
 
 		var self = this,
-		speedX = this._lastPos[0].x - this._lastPos[this._lastPos.length - 1].x,
+		speedX = 0,
+		speedY = 0;
+
+		if ( this._lastPos.length === 0 ) {
+
+			return;
+		}
+
+		speedX = this._lastPos[0].x - this._lastPos[this._lastPos.length - 1].x;
 		speedY = this._lastPos[0].y - this._lastPos[this._lastPos.length - 1].y;
 
 		this._circle.on('tick', function (e) {

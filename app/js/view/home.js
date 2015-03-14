@@ -74,7 +74,6 @@ function (
 			blocks = this._radio.reqres.request('blocks'),
 			balls = this._radio.reqres.request('balls');
 
-            console.log(blocks);
 
 			blocks.forEach(function (blockActor)
             {
@@ -104,15 +103,15 @@ function (
                         || block.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin45)
                         || block.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin60)
                         || block.hitTest(hitPos.x - radiusCos30, hitPos.y - radiusSin30)
-                                                                                  
+
                         || block.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin45)
                         || block.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin60)
                         || block.hitTest(hitPos.x + radiusCos30, hitPos.y + radiusSin30)
-                                                                                  
+
                         || block.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin45)
                         || block.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin60)
                         || block.hitTest(hitPos.x + radiusCos30, hitPos.y - radiusSin30)
-                                                                                  
+
                         || block.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin45)
                         || block.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin60)
                         || block.hitTest(hitPos.x - radiusCos30, hitPos.y + radiusSin30)
@@ -167,7 +166,7 @@ function (
 			var width = 100, height = 20;
 
             this._blocks = new Array();
-            
+
 			this._blocks.push(new blockActor({
 
 				'stage': this._stage,

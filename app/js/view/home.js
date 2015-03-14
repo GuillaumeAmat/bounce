@@ -3,24 +3,30 @@
 define([
 
 	'jquery',
+	'underscore',
 	'backbone',
 	'marionette',
 	'templates',
 	'easeljs',
 	'settings',
-	'actor/ball',
-	'actor/block',
+	'model/ball',
+	'model/block',
+	'collection/ball',
+	'collection/block',
 ],
 function (
 
 	$,
+	_,
 	Backbone,
 	Marionette,
 	templates,
 	EaselJS,
 	settings,
-	ballActor,
-	blockActor
+	ballModel,
+	blockModel,
+	ballCollection,
+	blockCollection
 ) {
 
 	'use strict';
@@ -40,6 +46,9 @@ function (
 
 			this._radio.reqres.setHandler('blocks', this.onRequestBlocks, this);
 			this._radio.reqres.setHandler('balls', this.onRequestBalls, this);
+
+			this._blocks = new blockCollection();
+			this._balls = new ballCollection();
 		},
 
 		onRender: function() {
@@ -68,24 +77,20 @@ function (
 
 		onTick: function (e)
         {
+            var self = this;
 
-            var self = this,
-			blocks = this._radio.reqres.request('blocks'),
-			balls = this._radio.reqres.request('balls');
-
-
-            balls.forEach(function (ballActor)
+            _.each(this._balls.models, function (ball)
             {
-                var ball = ballActor.get('shape'),
+                var ballShape = ball.get('shape'),
                 isHit = false;
 
-                blocks.forEach(function (blockActor)
+                _.each(this._blocks.models, function (block)
                 {
                     if ( isHit === false)
                     {
-                        var block = blockActor.get('shape'),
-                        hitPos = ball.localToLocal(0, 0, block),
-                        radius = ballActor.get('radius');
+                        var blockShape = block.get('shape'),
+                        hitPos = ballShape.localToLocal(0, 0, blockShape),
+                        radius = ball.get('radius');
 
 
                         var radiusCos45 = (radius * settings.cos45),
@@ -96,34 +101,34 @@ function (
                             radiusSin30 = (radius * settings.sin30);
 
                         if(
-                               block.hitTest(hitPos.x, hitPos.y - radius)
-                            || block.hitTest(hitPos.x, hitPos.y + radius)
-                            || block.hitTest(hitPos.x + radius, hitPos.y)
-                            || block.hitTest(hitPos.x - radius, hitPos.y)
+                               blockShape.hitTest(hitPos.x, hitPos.y - radius)
+                            || blockShape.hitTest(hitPos.x, hitPos.y + radius)
+                            || blockShape.hitTest(hitPos.x + radius, hitPos.y)
+                            || blockShape.hitTest(hitPos.x - radius, hitPos.y)
 
-                            || block.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin45)
-                            || block.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin60)
-                            || block.hitTest(hitPos.x - radiusCos30, hitPos.y - radiusSin30)
+                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin45)
+                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin60)
+                            || blockShape.hitTest(hitPos.x - radiusCos30, hitPos.y - radiusSin30)
 
-                            || block.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin45)
-                            || block.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin60)
-                            || block.hitTest(hitPos.x + radiusCos30, hitPos.y + radiusSin30)
+                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin45)
+                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin60)
+                            || blockShape.hitTest(hitPos.x + radiusCos30, hitPos.y + radiusSin30)
 
-                            || block.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin45)
-                            || block.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin60)
-                            || block.hitTest(hitPos.x + radiusCos30, hitPos.y - radiusSin30)
+                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin45)
+                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin60)
+                            || blockShape.hitTest(hitPos.x + radiusCos30, hitPos.y - radiusSin30)
 
-                            || block.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin45)
-                            || block.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin60)
-                            || block.hitTest(hitPos.x - radiusCos30, hitPos.y + radiusSin30)
+                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin45)
+                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin60)
+                            || blockShape.hitTest(hitPos.x - radiusCos30, hitPos.y + radiusSin30)
                         )
                         {
                             isHit  = true;
-                            ballActor.destroy();
+                            ball.destroy();
                         }
                     }
-                });
-			});
+                }, this);
+			}, this);
 
 
 
@@ -157,19 +162,12 @@ function (
 
 
 
-			if (this._blocks) {
-
-				this._blocks.forEach(function (blockActor) {
-
-					blockActor.destroy();
-				});
-			}
 
 			var width = 100, height = 20;
 
-            this._blocks = [];
+			this._blocks.reset();
 
-			this._blocks.push(new blockActor({
+			this._blocks.add( new blockModel({
 
 				'name2': 'Block1',
 				'stage': this._stage,
@@ -182,7 +180,7 @@ function (
 				'hyp': Math.sqrt(width * width + height * height),
 			}));
 
-			this._blocks.push(new blockActor({
+			this._blocks.add( new blockModel({
 
 				'name2': 'Block2',
                 'stage': this._stage,
@@ -195,7 +193,7 @@ function (
 				'hyp': Math.sqrt(width * width + height * height),
 			}));
 
-			this._blocks.push(new blockActor({
+			this._blocks.add( new blockModel({
 
 				'name2': 'Block3',
 				'stage': this._stage,
@@ -210,17 +208,9 @@ function (
 
 
 
-			if (this._balls) {
+			this._balls.reset();
 
-				this._balls.forEach(function (ballActor) {
-
-					ballActor.destroy();
-				});
-			}
-
-            this._balls = [];
-
-            this._balls.push(new ballActor({
+			this._balls.add( new ballModel({
 
 				'stage': this._stage,
 				'fillColor': '#bada55',
@@ -252,20 +242,10 @@ function (
 
 		onRequestBlocks: function () {
 
-			if (!this._blocks) {
-
-				return false;
-			}
-
 			return this._blocks;
 		},
 
 		onRequestBalls: function () {
-
-			if (!this._balls) {
-
-				return false;
-			}
 
 			return this._balls;
 		}

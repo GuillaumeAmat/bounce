@@ -118,6 +118,26 @@ function (
 			speedX = this._lastPos[0].x - this._lastPos[this._lastPos.length - 1].x;
 			speedY = this._lastPos[0].y - this._lastPos[this._lastPos.length - 1].y;
 
+			if (speedX > 200) {
+
+				speedX = 200;
+			}
+			else if (speedX < -200) {
+
+				speedX = -200;
+			}
+
+			if (speedY > 200) {
+
+				speedY = 200;
+			}
+			else if (speedY < -200) {
+
+				speedY = -200;
+			}
+
+			console.log('Your current speed is: ', speedX, speedY);
+
 			circle.on('tick', function (e) {
 
 				this.x -= speedX;

@@ -136,8 +136,6 @@ function (
 				speedY = -200;
 			}
 
-			console.log('Your current speed is: ', speedX, speedY);
-
 			circle.on('tick', function (e) {
 
 				this.x -= speedX;

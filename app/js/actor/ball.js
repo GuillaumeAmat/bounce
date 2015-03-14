@@ -102,28 +102,39 @@ function (
 
 		this._circle.on('tick', function (e) {
 
+			this.x -= speedX;
+			this.y -= speedY;
+
 			var circleMinX = this.x - self._options.radius,
 			circleMaxX = this.x + self._options.radius,
 			circleMinY = this.y - self._options.radius,
-			circleMaxY = this.y + self._options.radius,
-			circlePos = this.globalToLocal(this.x, this.y),
-			// stageMin = { 'x': 0, 'y': 0 },
-			// stageMax = { 'x': self._stage.canvas.width, 'y': self._stage.canvas.height };
-			stageMin = this.localToGlobal(0, 0),
-			stageMax = this.localToGlobal(self._stage.canvas.width, self._stage.canvas.height);
+			circleMaxY = this.y + self._options.radius;
 
-			// if (circleMinX < stageMin.x || circleMaxX > stageMax.x) {
-			//
-			// 	speedX *= -1;
-			// }
-			//
-			// if (circleMinY < stageMin.y || circleMaxY > stageMax.y) {
-			//
-			// 	speedY *= -1;
-			// }
 
-			this.x -= speedX;
-			this.y -= speedY;
+			if (circleMinX < 0) {
+
+				this.x -= circleMinX * 2;
+				speedX *= -1;
+			}
+
+			if (circleMaxX > self._stage.canvas.width) {
+
+				this.x -= (circleMaxX - self._stage.canvas.width) * 2;
+				speedX *= -1;
+			}
+
+			if (circleMinY < 0) {
+
+				this.y -= circleMinY * 2;
+				speedY *= -1;
+			}
+
+			if (circleMaxY > self._stage.canvas.height) {
+
+				this.y -= (circleMaxY - self._stage.canvas.height) * 2;
+				speedY *= -1;
+			}
+
 			speedX *= settings.ballVelocity;
 			speedY *= settings.ballVelocity;
 
@@ -136,9 +147,6 @@ function (
 
 				this.removeAllEventListeners('tick');
 			}
-
-
-
 		});
 	}
 

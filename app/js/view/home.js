@@ -61,18 +61,19 @@ function (
 
 			this._stage.mouseMoveOutside = true;
 
+			$(window).on('resize', function (e) {
 
+				self.onResize(e);
+			})
+			.trigger('resize');
+
+            // lancement du tick apres le resize qui lance le init
 			createjs.Ticker.addEventListener('tick', function (e){
 
 				self.onTick(e);
 			});
 
 
-			$(window).on('resize', function (e) {
-
-				self.onResize(e);
-			})
-			.trigger('resize');
 		},
 
 		onTick: function (e)
@@ -93,36 +94,7 @@ function (
                         hitPos = ballShape.localToLocal(0, 0, blockShape),
                         radius = ball.get('radius');
 
-
-                        var radiusCos45 = (radius * settings.cos45),
-                            radiusCos45 = (radius * settings.cos60),
-                            radiusCos30 = (radius * settings.cos30),
-                            radiusSin45 = (radius * settings.sin45),
-                            radiusSin60 = (radius * settings.sin60),
-                            radiusSin30 = (radius * settings.sin30);
-
-                        if(
-                               blockShape.hitTest(hitPos.x, hitPos.y - radius)
-                            || blockShape.hitTest(hitPos.x, hitPos.y + radius)
-                            || blockShape.hitTest(hitPos.x + radius, hitPos.y)
-                            || blockShape.hitTest(hitPos.x - radius, hitPos.y)
-
-                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin45)
-                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin60)
-                            || blockShape.hitTest(hitPos.x - radiusCos30, hitPos.y - radiusSin30)
-
-                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin45)
-                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin60)
-                            || blockShape.hitTest(hitPos.x + radiusCos30, hitPos.y + radiusSin30)
-
-                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin45)
-                            || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin60)
-                            || blockShape.hitTest(hitPos.x + radiusCos30, hitPos.y - radiusSin30)
-
-                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin45)
-                            || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin60)
-                            || blockShape.hitTest(hitPos.x - radiusCos30, hitPos.y + radiusSin30)
-                        )
+                        if (this.testHit(blockShape, radius, hitPos) === true)
                         {
                             isHit  = true;
                             this.checkContact(ball, block);
@@ -169,8 +141,9 @@ function (
             this.scoreText.x = 300;
             this.scoreText.y = 50;
 			this._stage.addChild(this.scoreText);
-            
-            
+
+            // defini un tableau de couleur utilisable pour le jeu actuel
+            this._colors = _.first(_.shuffle(settings.listColors), 3);
 
 
 			var width = 100, height = 20;
@@ -182,7 +155,7 @@ function (
 
 				'name2': 'Block2',
                 'stage': this._stage,
-				'fillColor': '#FF0000',
+				'fillColor': this._colors[0],
 				'x': 200,
 				'y': 50,
 				'width': width,
@@ -197,7 +170,7 @@ function (
 
 				'name2': 'Block1',
 				'stage': this._stage,
-				'fillColor': '#FFFF00',
+				'fillColor': this._colors[1],
 				'x': 80,
 				'y': 90,
 				'width': width,
@@ -212,7 +185,7 @@ function (
 
 				'name2': 'Block3',
 				'stage': this._stage,
-				'fillColor': '#FF00FF',
+				'fillColor': this._colors[2],
 				'x': 320,
 				'y': 90,
 				'width': width,
@@ -226,9 +199,7 @@ function (
 
 
 			this._balls.reset();
-            this.addBall();
-            this.addBall();
-            this.addBall();
+            this.addBall(this._colors[[Math.floor(Math.random()*settings.listColors.length)]]);
         },
 
         getWidthPercent: function (number) {
@@ -281,11 +252,51 @@ function (
             this._balls.add(new ballModel({
 
 				'stage': this._stage,
-				'fillColor': '#FF0000',
+				'fillColor': this._colors[Math.floor(Math.random()*this._colors.length)],
 				'x': 100,
 				'y': 500,
 				'radius': 20,
 			}));
+        },
+
+        testHit: function(blockShape, radius, hitPos) {
+
+            var radiusCos45 = (radius * settings.cos45),
+                radiusCos45 = (radius * settings.cos60),
+                radiusCos30 = (radius * settings.cos30),
+                radiusSin45 = (radius * settings.sin45),
+                radiusSin60 = (radius * settings.sin60),
+                radiusSin30 = (radius * settings.sin30);
+
+            if(
+                   blockShape.hitTest(hitPos.x, hitPos.y - radius)
+                || blockShape.hitTest(hitPos.x, hitPos.y + radius)
+                || blockShape.hitTest(hitPos.x + radius, hitPos.y)
+                || blockShape.hitTest(hitPos.x - radius, hitPos.y)
+
+                || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin45)
+                || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y - radiusSin60)
+                || blockShape.hitTest(hitPos.x - radiusCos30, hitPos.y - radiusSin30)
+
+                || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin45)
+                || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y + radiusSin60)
+                || blockShape.hitTest(hitPos.x + radiusCos30, hitPos.y + radiusSin30)
+
+                || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin45)
+                || blockShape.hitTest(hitPos.x + radiusCos45, hitPos.y - radiusSin60)
+                || blockShape.hitTest(hitPos.x + radiusCos30, hitPos.y - radiusSin30)
+
+                || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin45)
+                || blockShape.hitTest(hitPos.x - radiusCos45, hitPos.y + radiusSin60)
+                || blockShape.hitTest(hitPos.x - radiusCos30, hitPos.y + radiusSin30)
+            )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 	});
 });

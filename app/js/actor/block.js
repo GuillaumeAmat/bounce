@@ -63,7 +63,7 @@ function (
 
 	actor.prototype.destroy = function () {
 
-		this._circle.removeAllEventListeners('tick');
+		this._block.removeAllEventListeners('tick');
 		return this._stage.removeChild(this._block);
 	}
 

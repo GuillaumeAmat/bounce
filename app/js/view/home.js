@@ -50,7 +50,6 @@ function (
 
 			createjs.Touch.enable(this._stage);
 
-			this._stage.enableMouseOver(10);
 			this._stage.mouseMoveOutside = true;
 
 

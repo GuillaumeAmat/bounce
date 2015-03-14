@@ -26,10 +26,13 @@ function (
 
 			'stage': null,
 			'shape': null,
+			'fillColor': 'black',
 			'x': 0,
 			'y': 0,
 			'radius': 40,
-			'fillColor': 'black'
+			'regX': 0,
+			'regY': 0,
+			'rotation': 0,
 		},
 
 		initialize: function () {

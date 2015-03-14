@@ -167,30 +167,35 @@ function (
 
 			this._blocks.reset();
 
-			this._blocks.add( new blockModel({
-
-				'name2': 'Block1',
-				'stage': this._stage,
-				'fillColor': '#FFFF00',
-				'x': 50,
-				'y': 50,
-				'width': width,
-				'height': height,
-				'rotation': -45,
-				'hyp': Math.sqrt(width * width + height * height),
-			}));
 
 			this._blocks.add( new blockModel({
 
 				'name2': 'Block2',
                 'stage': this._stage,
 				'fillColor': '#FF0000',
-				'x': 150,
+				'x': 200,
 				'y': 50,
 				'width': width,
 				'height': height,
-				'rotation': 0,
 				'hyp': Math.sqrt(width * width + height * height),
+				'regX': 50,
+				'regY': 10,
+				'rotation': 0,
+			}));
+
+			this._blocks.add( new blockModel({
+
+				'name2': 'Block1',
+				'stage': this._stage,
+				'fillColor': '#FFFF00',
+				'x': 80,
+				'y': 90,
+				'width': width,
+				'height': height,
+				'hyp': Math.sqrt(width * width + height * height),
+				'regX': 50,
+				'regY': 10,
+				'rotation': -45,
 			}));
 
 			this._blocks.add( new blockModel({
@@ -198,12 +203,14 @@ function (
 				'name2': 'Block3',
 				'stage': this._stage,
 				'fillColor': '#FF00FF',
-				'x': 250,
-				'y': 50,
+				'x': 320,
+				'y': 90,
 				'width': width,
 				'height': height,
-				'rotation': 45,
 				'hyp': Math.sqrt(width * width + height * height),
+				'regX': 50,
+				'regY': 10,
+				'rotation': 45,
 			}));
 
 

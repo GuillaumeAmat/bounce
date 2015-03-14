@@ -29,11 +29,12 @@ function (
 			'fillColor': 'black',
 			'x': 0,
 			'y': 0,
-			'radius': 40,
 			'width': 40,
 			'height': 40,
-			'rotation': 0,
 			'hyp': Math.sqrt(40 * 40 + 40 * 40),
+			'regX': 0,
+			'regY': 0,
+			'rotation': 0,
 		},
 
 		initialize: function () {
@@ -53,6 +54,8 @@ function (
 			.drawRect(0, 0, this.get('width'), this.get('height'));
 			shape.x = this.get('x');
 			shape.y = this.get('y');
+			shape.regX = this.get('regX');
+			shape.regY = this.get('regY');
 			shape.rotation = this.get('rotation');
 
 			stage.addChild(shape);

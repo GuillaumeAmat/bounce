@@ -79,6 +79,7 @@ function (
         {
             var self = this;
 
+
             _.each(this._balls.models, function (ball)
             {
                 var ballShape = ball.get('shape'),
@@ -124,6 +125,7 @@ function (
                         )
                         {
                             isHit  = true;
+                            this.checkContact(ball, block);
                             ball.destroy();
                         }
                     }
@@ -147,8 +149,11 @@ function (
 
             var self = this;
 
+            this.score  = 0;
+
             this._stage.canvas.width = window.innerWidth;
             this._stage.canvas.height = window.innerHeight;
+
 
 
 			if (this._fond) {
@@ -160,7 +165,12 @@ function (
             this._fond.graphics.beginFill("#333").drawRect(0, 0, this._stage.canvas.width, this._stage.canvas.height);
             this._stage.addChild(this._fond);
 
-
+            this.scoreText = new createjs.Text("Hello World", this.score, "#FFFFFF");
+            this.scoreText.x = 300;
+            this.scoreText.y = 50;
+			this._stage.addChild(this.scoreText);
+            
+            
 
 
 			var width = 100, height = 20;
@@ -216,15 +226,9 @@ function (
 
 
 			this._balls.reset();
-
-			this._balls.add( new ballModel({
-
-				'stage': this._stage,
-				'fillColor': '#bada55',
-				'x': 100,
-				'y': 500,
-				'radius': 20,
-			}));
+            this.addBall();
+            this.addBall();
+            this.addBall();
         },
 
         getWidthPercent: function (number) {
@@ -255,6 +259,33 @@ function (
 		onRequestBalls: function () {
 
 			return this._balls;
-		}
+		},
+
+        checkContact: function(ball, block) {
+
+            if (ball.get('fillColor') == block.get('fillColor'))
+            {
+                this.score++;
+            }
+            else
+            {
+                this.score--;
+            }
+
+            this.scoreText.text = this.score;
+            this.addBall();
+        },
+        
+        addBall: function() {
+
+            this._balls.add(new ballModel({
+
+				'stage': this._stage,
+				'fillColor': '#FF0000',
+				'x': 100,
+				'y': 500,
+				'radius': 20,
+			}));
+        }
 	});
 });

@@ -103,7 +103,6 @@ function (
                         {
                             isHit  = true;
                             this.checkContact(ball, block);
-                            ball.destroy();
                         }
                     }
                 }, this);
@@ -205,6 +204,10 @@ function (
 
 			this._balls.reset();
             this.addBall(this._colors[[Math.floor(Math.random()*settings.listColors.length)]]);
+            this.addBall(this._colors[[Math.floor(Math.random()*settings.listColors.length)]]);
+            this.addBall(this._colors[[Math.floor(Math.random()*settings.listColors.length)]]);
+            this.addBall(this._colors[[Math.floor(Math.random()*settings.listColors.length)]]);
+            this.addBall(this._colors[[Math.floor(Math.random()*settings.listColors.length)]]);
         },
 
         getWidthPercent: function (number) {
@@ -246,18 +249,19 @@ function (
             else
             {
                 this.score--;
+                this.addBall(ball.get('fillColor'));
             }
+            ball.destroy();
 
             this.scoreText.text = this.score;
-            this.addBall();
         },
 
-        addBall: function() {
+        addBall: function(couleur = this._colors[Math.floor(Math.random()*this._colors.length)]) {
 
             this._balls.add(new ballModel({
 
 				'stage': this._stage,
-				'fillColor': this._colors[Math.floor(Math.random()*this._colors.length)],
+				'fillColor': couleur,
 				'x': 100,
 				'y': 500,
 				'radius': 20,
